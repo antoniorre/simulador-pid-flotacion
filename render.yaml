@@ -1,6 +1,7 @@
 services:
   - type: web
-    runtime: static
+    runtime: python
     name: simulador-pid-flotacion
-    buildCommand: "true"
-    staticPublishPath: ./
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.address 0.0.0.0 --server.port $PORT --server.headless true
