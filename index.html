@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071821">
+  <title>Simulador PID | Celda de Flotación</title>
+  <style>
+    :root{--ink:#e8f6f6;--muted:#9bb7bc;--panel:#0c242d;--panel2:#102e39;--line:#28515b;--cyan:#20c7cf;--green:#5ee28e;--orange:#ffae42;--red:#ff6e78;--blue:#3e8cf4}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% -20%,#184b59 0,transparent 35%),#071821;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{max-width:1480px;margin:auto;padding:28px 24px 50px}.eyebrow{color:var(--cyan);font-size:.76rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.hero{display:flex;gap:24px;justify-content:space-between;align-items:end;margin:8px 0 24px}.hero h1{font-size:clamp(1.7rem,3vw,2.8rem);line-height:1.06;margin:7px 0 6px}.hero p{color:var(--muted);margin:0;max-width:760px}.badge{border:1px solid #1a725f;background:#073527;color:#70f4aa;border-radius:999px;padding:8px 12px;font-size:.8rem;font-weight:800;white-space:nowrap}.grid{display:grid;grid-template-columns:1.1fr 1.3fr .9fr;gap:16px}.panel{border:1px solid var(--line);background:linear-gradient(150deg,rgba(18,54,65,.98),rgba(8,29,37,.98));border-radius:16px;padding:18px;box-shadow:0 14px 35px #0003}.panel h2{font-size:1rem;margin:0 0 15px}.diagram{min-height:352px;overflow:hidden}.cellSvg{width:100%;height:300px;display:block}.mini{font-size:.8rem;color:var(--muted)}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.metric{border:1px solid #204d59;background:#071b22;border-radius:11px;padding:11px}.metric span{display:block;color:var(--muted);font-size:.72rem}.metric strong{font-size:1.38rem;color:var(--cyan);margin-top:3px;display:block}.metric .orange{color:var(--orange)}.metric .green{color:var(--green)}.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.group{padding-bottom:11px;margin-bottom:11px;border-bottom:1px solid #214b56}.group:last-child{border-bottom:0}.label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-weight:750;font-size:.87rem}.value{color:var(--cyan);font-variant-numeric:tabular-nums;font-size:1.05rem}input[type=range]{width:100%;margin:12px 0 0;accent-color:var(--cyan);cursor:pointer}select{width:100%;margin-top:10px;background:#06171e;border:1px solid #35616c;color:#e8f6f6;border-radius:8px;padding:9px}.small{font-size:.75rem;color:var(--muted);line-height:1.4;margin:5px 0 0}.switch{display:flex;gap:9px;align-items:center;margin-top:14px}.switch input{width:18px;height:18px;accent-color:var(--green)}button{border:1px solid #2d8792;background:#0c5662;color:white;padding:9px 11px;border-radius:8px;font-weight:750;cursor:pointer}button:hover{filter:brightness(1.16)}.warn{background:#754315;border-color:#ad681f}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.chart-block{margin-top:16px}.chart-title{display:flex;justify-content:space-between;align-items:center;margin:0 0 7px;font-size:.88rem;font-weight:750}.legend{color:var(--muted);font-size:.72rem;font-weight:500}.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 4px 1px 9px}.chart{display:block;width:100%;height:175px;border:1px solid #2b5864;border-radius:10px;background:#071a21}.bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.equation{color:#aeeff0;background:#061b22;border:1px solid #26515c;border-radius:10px;padding:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.65;overflow:auto}.ladder{padding:14px;background:#07171d;border-radius:10px;border:1px solid #28535d;white-space:pre;overflow:auto;color:#d5ecea;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.good{color:var(--green)}.live{color:var(--orange)}.footnote{color:var(--muted);font-size:.78rem;margin:16px 3px 0;line-height:1.45}@media(max-width:1050px){.grid{grid-template-columns:1fr 1fr}.diagram{grid-column:span 2}.bottom{grid-template-columns:1fr}}@media(max-width:700px){.wrap{padding:18px 12px 32px}.hero{align-items:start;flex-direction:column}.grid,.control-grid,.bottom{grid-template-columns:1fr}.diagram{grid-column:auto}.metrics{grid-template-columns:repeat(3,1fr)}.metric{padding:8px}.metric strong{font-size:1.08rem}.chart{height:155px}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero"><div><div class="eyebrow">Prototipo de automatización minera</div><h1>SIMULADOR PID · CELDA DE FLOTACIÓN</h1><p>Control de nivel de pulpa en tiempo real. Cambia las ganancias PID sin reiniciar y observa la respuesta de proceso, la válvula y la señal 4–20 mA.</p></div><div class="badge" id="stateBadge">● PID ACTIVO · AUTOMÁTICO</div></header>
+  <section class="grid">
+    <article class="panel diagram"><h2>Proceso de flotación</h2><svg class="cellSvg" viewBox="0 0 460 300" role="img" aria-label="Esquema de celda de flotación de minerales">
+      <defs><linearGradient id="tank" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#58a4e8" stop-opacity=".9"/><stop offset="1" stop-color="#1c5b9b" stop-opacity=".95"/></linearGradient><pattern id="bubbles" width="29" height="28" patternUnits="userSpaceOnUse"><circle cx="8" cy="9" r="3" fill="#dafaff" opacity=".75"/><circle cx="20" cy="20" r="5" fill="#a4e9ff" opacity=".6"/><circle cx="27" cy="6" r="2" fill="#fff" opacity=".8"/></pattern></defs>
+      <path d="M44 48 H101" stroke="#b5d4d9" stroke-width="3"/><path d="M93 38 L110 48 L93 58" fill="none" stroke="#b5d4d9" stroke-width="3"/><text x="12" y="35" fill="#b5d4d9" font-size="12">Alimentación Qᵢₙ</text><path d="M110 47 V97" stroke="#79c7d2" stroke-width="13"/><path d="M110 47 V97" stroke="#bdeef2" stroke-width="4"/>
+      <ellipse cx="230" cy="108" rx="153" ry="31" fill="#254b66" stroke="#7fbdcf" stroke-width="3"/><path d="M77 108 V230 Q77 270 230 276 Q383 270 383 230 V108" fill="url(#tank)" stroke="#7fbdcf" stroke-width="3"/><path d="M78 110 Q230 150 382 110 V215 Q230 246 78 215Z" fill="url(#bubbles)" opacity=".75"/>
+      <rect id="levelFill" x="80" y="133" width="300" height="95" fill="#5ebdf2" opacity=".42"/><path id="surface" d="M78 133 Q230 151 382 133" stroke="#d6f9ff" stroke-width="3" fill="none"/>
+      <path d="M228 20 V207" stroke="#91d5dd" stroke-width="12"/><path d="M228 20 V207" stroke="#d7ffff" stroke-width="4"/><ellipse cx="228" cy="26" rx="48" ry="12" fill="#27527a" stroke="#98d5e2" stroke-width="2"/><path d="M180 26 Q228 -2 276 26" fill="#3b79aa"/><ellipse cx="228" cy="207" rx="66" ry="20" fill="#195886"/><path d="M162 207 Q228 178 294 207" stroke="#8bcbea" stroke-width="3" fill="none"/><text x="247" y="50" fill="#d8f3f5" font-size="11">Agitador</text>
+      <path d="M383 210 H430" stroke="#bddee1" stroke-width="5"/><path d="M414 196 V224" stroke="#ffae42" stroke-width="10"/><circle cx="414" cy="210" r="11" fill="#0b2832" stroke="#ffca75" stroke-width="3"/><text x="350" y="242" fill="#d7edef" font-size="11">Válvula de descarga</text><path d="M430 210 H453" stroke="#b5d4d9" stroke-width="3"/><path d="M443 200 L458 210 L443 220" fill="none" stroke="#b5d4d9" stroke-width="3"/>
+      <path d="M78 102 Q230 72 382 102" stroke="#d7e5e4" stroke-width="9" stroke-dasharray="4 5" opacity=".9"/><text x="159" y="83" fill="#e9fdfd" font-size="12">Espuma / concentrado</text><circle cx="355" cy="145" r="8" fill="#20c7cf" stroke="white"/><path d="M363 145 H426" stroke="#20c7cf" stroke-width="2" stroke-dasharray="4 3"/><text x="339" y="137" fill="#dff" font-size="10">LT-101</text>
+    </svg><p class="mini">LT-101 mide el nivel; el PLC regula LV-101 para equilibrar caudal de entrada y descarga.</p>
+    <div class="metrics"><div class="metric"><span>Consigna (SP)</span><strong id="spCard">60.0 %</strong></div><div class="metric"><span>Nivel medido (PV)</span><strong class="green" id="pvCard">60.0 %</strong></div><div class="metric"><span>Válvula LV-101</span><strong class="orange" id="uCard">45.0 %</strong></div></div></article>
+    <article class="panel"><h2>Ganancias PID <span class="live">(en tiempo real; no es necesario reiniciar)</span></h2><div class="control-grid"><div>
+      <div class="group"><div class="label"><span>Kp · proporcional</span><output class="value" id="kpOut">2.00</output></div><input id="kp" type="range" min="0" max="8" step="0.05" value="2"></div>
+      <div class="group"><div class="label"><span>Ki · integral [1/s]</span><output class="value" id="kiOut">0.020</output></div><input id="ki" type="range" min="0" max="0.20" step="0.002" value="0.02"></div>
+      <div class="group"><div class="label"><span>Kd · derivativa [s]</span><output class="value" id="kdOut">0.0</output></div><input id="kd" type="range" min="0" max="8" step="0.1" value="0"></div>
+    </div><div>
+      <div class="group"><div class="label"><span>Nivel deseado SP</span><output class="value" id="spOut">60.0 %</output></div><input id="sp" type="range" min="25" max="85" step="1" value="60"></div>
+      <div class="group"><div class="label"><span>Caudal de alimentación Q<sub>in</sub></span><output class="value" id="feedOut">100 m³/h</output></div><input id="feed" type="range" min="60" max="145" step="1" value="100"></div>
+      <div class="group"><div class="label"><span>Válvula manual</span><output class="value" id="manualOut">45 %</output></div><input id="manual" type="range" min="0" max="100" step="1" value="45" disabled></div>
+      <label class="switch"><input id="auto" type="checkbox" checked><span>Modo automático (PID)</span></label>
+    </div></div><div class="buttons"><button id="disturb">Aplicar perturbación +15 m³/h</button><button class="warn" id="reset">Reiniciar simulación</button></div><p class="small">La válvula tiene acción inversa: si el nivel PV sube sobre la consigna SP, el PID abre LV-101 y el nivel desciende.</p>
+    <div class="metrics"><div class="metric"><span>Señal LT-101</span><strong id="maCard">13.60 mA</strong></div><div class="metric"><span>Error e = PV − SP</span><strong id="errorCard">0.0 %</strong></div><div class="metric"><span>Tiempo simulado</span><strong id="timeCard">0 s</strong></div></div></article>
+    <article class="panel"><h2>Estado de operación</h2><div class="metric"><span>Modelo del proceso</span><strong style="font-size:1.08rem">G(s) = −0.8 / (120s + 1)</strong></div><div class="group" style="margin-top:15px"><div class="label"><span>Constante de tiempo τ</span><span class="value">120 s</span></div><p class="small">Proceso lento de inventario de pulpa. El signo menos vincula mayor abertura con menor nivel.</p></div><div class="group"><div class="label"><span>Acción del control</span><span class="value">INVERSA</span></div><p class="small">e = PV − SP; a mayor error positivo, más apertura de descarga.</p></div><div class="group"><div class="label"><span>Sintonía inicial</span><span class="value">Ziegler–Nichols + ajuste</span></div><p class="small">Punto de partida: Kp=2.0, Ki=0.020 s⁻¹, Kd=0. Comparar estabilidad, sobreimpulso y tiempo de asentamiento.</p></div><div class="metric"><span>Recomendación de prueba</span><strong style="font-size:1.02rem;color:#ffca75">Cambie SP o Q<sub>in</sub> y ajuste Kp, Ki, Kd.</strong></div></article>
+  </section>
+  <section class="chart-block"><div class="chart-title"><span>Nivel de pulpa: PV (verde) vs consigna SP (gris)</span><span class="legend"><i style="background:#5ee28e"></i>PV <i style="background:#a7b9bd"></i>SP</span></div><canvas class="chart" id="levelChart" width="1300" height="180"></canvas></section>
+  <section class="chart-block"><div class="chart-title"><span>Salida del controlador / abertura LV-101 (%)</span><span class="legend"><i style="background:#ffae42"></i>u(t)</span></div><canvas class="chart" id="valveChart" width="1300" height="180"></canvas></section>
+  <section class="chart-block"><div class="chart-title"><span>Corriente del transmisor LT-101 — onda en tiempo real (4–20 mA)</span><span class="legend"><i style="background:#20c7cf"></i>I(t) = 4 + 16 · PV/100</span></div><canvas class="chart" id="currentChart" width="1300" height="180"></canvas></section>
+  <section class="bottom"><article class="panel"><h2>Modelo matemático aplicado</h2><div class="equation">Balance de volumen:     A · dh/dt = Qᵢₙ − Qₒᵤₜ
+
+Modelo linealizado:      G(s) = −0.8 / (120s + 1)
+
+Ecuación discreta:       PVₖ₊₁ = PVₖ + Δt/τ · [−0.8(uₖ−u₀) + dₖ − (PVₖ−PV₀)]
+
+PID de acción inversa:   u = sat[u₀ + Kp·e + Ki∫e dt + Kd·de/dt]
+                         e = PV − SP
+
+Transmisor de nivel:     I = 4 + 16 · PV/100   mA</div><p class="small">Es un modelo didáctico de primer orden. Los datos reales de planta deben identificarse antes de usarlo para operación industrial.</p></article>
+  <article class="panel"><h2>Lógica Ladder PLC (referencial)</h2><pre class="ladder">RUNG 001  // Escalamiento de transmisor LT-101
+ |----[ AI_LT101_mA ]----[ SCP 4..20 mA → 0..100 % ]----( PV_NIVEL )----|
+
+RUNG 002  // Selección de modo
+ |----[ MODO_AUTO ]-------------------------( PID_EN )-------------------|
+
+RUNG 003  // Bloque PID, acción inversa
+ |----[ PID_EN ]----[ PID  SP:=SP_NIVEL
+ |                           PV:=PV_NIVEL
+ |                           Kp:=Kp  Ki:=Ki  Kd:=Kd
+ |                           Reverse:=TRUE ]----------------( CV_PID )---|
+
+RUNG 004  // Manual / automático y límites
+ |----[ MODO_AUTO ]------------------------[ MOV CV_PID → CV_VALV ]------|
+ |----[/MODO_AUTO ]------------------------[ MOV HMI_VALV → CV_VALV ]----|
+ |----[ LIM 0..100 % ]-------------------------( CV_VALV )--------------|
+
+RUNG 005  // Salida analógica a LV-101
+ |----[ CV_VALV ]----[ SCP 0..100 % → 4..20 mA ]----( AO_LV101_mA )------|</pre></article></section>
+  <p class="footnote">Simulador académico: no sustituye pruebas de identificación, análisis de seguridad ni el programa validado de un PLC industrial.</p>
+</main>
+<script>
+(() => {
+  const $=id=>document.getElementById(id), ranges=['kp','ki','kd','sp','feed','manual'];
+  const state={t:0,pv:60,u:45,integral:0,lastE:0,dist:0,h:[],acc:0};
+  const base={pv:60,u:45,feed:100}; const dt=.35, tau=120, gain=-.8;
+  function n(v,d=1){return Number(v).toFixed(d)}
+  function read(){return {kp:+$('kp').value,ki:+$('ki').value,kd:+$('kd').value,sp:+$('sp').value,feed:+$('feed').value,manual:+$('manual').value,auto:$('auto').checked}}
+  function labels(c){$('kpOut').textContent=n(c.kp,2);$('kiOut').textContent=n(c.ki,3);$('kdOut').textContent=n(c.kd,1);$('spOut').textContent=n(c.sp,1)+' %';$('feedOut').textContent=n(c.feed,0)+' m³/h';$('manualOut').textContent=n(c.manual,0)+' %';$('manual').disabled=c.auto;$('stateBadge').textContent=c.auto?'● PID ACTIVO · AUTOMÁTICO':'● MODO MANUAL'}
+  function tick(){const c=read();labels(c);const e=state.pv-c.sp; let wanted;
+    if(c.auto){let candidate=state.integral+e*dt; const deriv=(e-state.lastE)/dt; wanted=base.u+c.kp*e+c.ki*candidate+c.kd*deriv; const clipped=Math.max(0,Math.min(100,wanted)); if(clipped===wanted||Math.sign(e)!==Math.sign(wanted-clipped))state.integral=candidate; state.lastE=e; state.u=clipped}else state.u=c.manual;
+    state.dist+=(c.feed-base.feed-state.dist)*dt/7; const d=state.dist*.16; state.pv+=dt/tau*(gain*(state.u-base.u)+d-(state.pv-base.pv));state.pv=Math.max(0,Math.min(100,state.pv));state.t+=dt;const mA=4+16*state.pv/100;state.h.push({pv:state.pv,sp:c.sp,u:state.u,ma:mA});if(state.h.length>200)state.h.shift();render(c,e,mA);}
+  function render(c,e,mA){$('spCard').textContent=n(c.sp)+' %';$('pvCard').textContent=n(state.pv)+' %';$('uCard').textContent=n(state.u)+' %';$('maCard').textContent=n(mA,2)+' mA';$('errorCard').textContent=n(e)+' %';$('timeCard').textContent=n(state.t,0)+' s';
+    const y=108+((100-state.pv)/100)*116;$('levelFill').setAttribute('y',y);$('levelFill').setAttribute('height',228-y);$('surface').setAttribute('d',`M78 ${y} Q230 ${y+16} 382 ${y}`);draw('levelChart',['pv','sp'],[ '#5ee28e','#a7b9bd'],0,100,'Nivel (%)');draw('valveChart',['u'],['#ffae42'],0,100,'Abertura (%)');draw('currentChart',['ma'],['#20c7cf'],4,20,'Corriente (mA)');}
+  function draw(id,keys,colors,min,max,unit){const can=$(id),ctx=can.getContext('2d'),w=can.width,h=can.height,p={l:48,r:12,t:12,b:24},cw=w-p.l-p.r,ch=h-p.t-p.b;ctx.clearRect(0,0,w,h);ctx.font='12px system-ui';ctx.textAlign='right';ctx.fillStyle='#8faeb3';ctx.strokeStyle='#234a54';ctx.lineWidth=1;for(let j=0;j<5;j++){let yy=p.t+ch*j/4,val=max-(max-min)*j/4;ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText(val.toFixed(max-min<=16?1:0),p.l-6,yy+4)}ctx.textAlign='left';ctx.fillText(unit,p.l+4,13);if(state.h.length<2)return;keys.forEach((key,k)=>{ctx.beginPath();state.h.forEach((o,i)=>{let x=p.l+i*cw/199;let yy=p.t+(max-o[key])/(max-min)*ch; i?ctx.lineTo(x,yy):ctx.moveTo(x,yy)});ctx.strokeStyle=colors[k];ctx.lineWidth=3;ctx.stroke()})}
+  ranges.forEach(id=>$(id).addEventListener('input',()=>{const c=read();labels(c);if(id==='sp')state.integral=0}));$('auto').addEventListener('change',()=>{state.integral=0;state.lastE=0;labels(read())});$('disturb').onclick=()=>{$('feed').value=Math.min(145,+$('feed').value+15)};$('reset').onclick=()=>{Object.assign(state,{t:0,pv:60,u:45,integral:0,lastE:0,dist:0,h:[]});$('feed').value=100;$('sp').value=60;$('manual').value=45};
+  labels(read());for(let i=0;i<80;i++)tick();setInterval(tick,125);
+})();
+</script>
+</body>
+</html>
